@@ -1,6 +1,8 @@
 require_relative 'polynom'
 require_relative 'algorithms'
-
+def abs(number)
+  number < 0 ? -number : number
+end
 # def Interface.clone(list)
 #   newlist = []
 #   list.each do |elem|
@@ -113,7 +115,7 @@ module Interface
   
     printf "#{s1} | #{s2}\n"
     printf "#{"-"*s1.size}-|-#{"-"*s2.size}\n"
-    printf "#{" "*(s1.size - s3.size)}#{s3} | #{s4}\n"
+    printf "#{" "*abs(s1.size - s3.size)}#{s3} | #{s4}\n"
   
     printf "Проверка:\n"
     printf "(#{s2})*(#{s4}) + #{s3} = #{(p2*d+r).pp} ==? #{s1}\n"

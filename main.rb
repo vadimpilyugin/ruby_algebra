@@ -8,14 +8,18 @@ $gf = nil
 
 def getp(str)
   printf "#{str}: "
-  pol = STDIN.gets.chomp.split(/ /).map(&:to_i).reverse
+  #pol = STDIN.gets.chomp.split(/ /).map(&:to_i).reverse
+  pol = []
+  gets.chomp.reverse.each_char do |c|
+    pol << c.to_i
+  end
   p = Polynom.new(pol,$gf)
   puts "=> (#{p.pp})"
   return p
 end
 
 
-
+while true do
 printf "Калькулятор в Конечных Полях v1.0\n"
 puts "-"*"Калькулятор в Конечных Полях v1.0\n".size
 printf "Поле коэффициентов: "
@@ -27,18 +31,18 @@ puts "=> Работаем с полем F(#{$gf})/(#{generator.pp})"
 while true do
 puts "="*"Калькулятор в Конечных Полях v1.0\n".size
   puts "Действия: i,m,d,mi,eq,euc,tab,varc"
-  puts "i - \t найти обратный элемент"
-  puts "s - \t выполнить Сложение полиномов"
-  puts "m - \t выполнить Умножение полиномов"
-  puts "d - \t выполнить Деление в кольце"
-  puts "deg - \t возвести в Степень"
+  puts "(1)i - \t найти обратный элемент"
+  puts "(2)s - \t выполнить Сложение полиномов"
+  puts "(3)m - \t выполнить Умножение полиномов"
+  puts "(4)d - \t выполнить Деление в кольце"
+  puts "(5)deg - \t возвести в Степень"
 
-  puts "mi - \t найти Обратную Матрицу 4х4"
-  puts "eq - \t найти Решение Уравнения"
-  puts "euc - \t выполнить Евклидово деление с остатком"
-  puts "tab - \t построить Таблицу для элемента поля"
-  puts "varc - \t выполнить Подстановку полиномов"
-  puts "exit - \t Выход"
+  puts "(6)mi - \t найти Обратную Матрицу 4х4"
+  puts "(7)eq - \t найти Решение Уравнения"
+  puts "(8)euc - \t выполнить Евклидово деление с остатком"
+  puts "(9)tab - \t построить Таблицу для элемента поля"
+  puts "(10)varc - \t выполнить Подстановку полиномов"
+  puts "Enter - \t повторить ввод параметров"
   puts "-------"
   printf "Выбор: "
   s = gets.chomp
@@ -93,7 +97,7 @@ puts "="*"Калькулятор в Конечных Полях v1.0\n".size
 # f.pp
 # printf "Выберите опцию: i,m,d,mi,eq,euc,tab,varc: "
 # s = gets.chomp
-if s == "i"
+if s == "i" || s == "1"
   # printf "Введите многочлен для обращения: "
   # inv = STDIN.gets.chomp.split(/ /).map(&:to_i)
   # printf "Введен многочлен "
@@ -108,29 +112,36 @@ if s == "i"
   # inv = ring.inverse(pol)
   # puts inv.pp
   # printf "Проверка: (#{pol.pp})*(#{inv.pp}) = #{(pol*inv).pp} mod (#{f.pp}) = #{((pol*inv)%f).pp} ==? 1\n"
-elsif s == "s"
+elsif s == "s" || s == "2"
   s1 = getp("Первое слагаемое")
   s2 = getp("Второе слагаемое")
 
   Interface.addition(s1,s2,ring)
-elsif s == "m"
-  m1 = getp("Первый множитель")
-  m2 = getp("Второй множитель")
-
-  Interface.multiplication(m1,m2,ring)
-
+elsif s == "m" || s == "3"
+  while true do
+    m1 = getp("Первый множитель(0 для выхода)")
+    m2 = getp("Второй множитель")
+    if m1 == m1.zero || m2 == m2.zero
+      break
+    end
+    Interface.multiplication(m1,m2,ring)
+  end
   # mult = m1*m2
   # printf "Умножение: (#{m1.pp})*(#{m2.pp}) = #{mult.pp} mod (#{f.pp}) = #{(mult%f).pp}\n"
-elsif s == "d"
-  d1 = getp("Делимое")
-  d2 = getp("Делитель")
-
-  Interface.division(d1,d2,ring)
+elsif s == "d" || s == "4"
+  while true do
+    d1 = getp("Делимое")
+    d2 = getp("Делитель(0 для выхода)")
+    if d2 == d2.zero
+      break
+    end
+    Interface.division(d1,d2,ring)
+  end
 
   # div = ring.divide(d1,d2)
   # printf "(#{d1.pp})/(#{d2.pp}) = #{div.pp}\n"
   # printf "Проверка: (#{div.pp})*(#{d2.pp}) = #{(div*d2).pp} mod (#{f.pp}) = #{((div*d2)%f).pp} ==? #{d1.pp}\n"
-elsif s == "deg"
+elsif s == "deg" || s == "5"
   pol = getp("Полином")
   while true
     printf "Степень: "
@@ -140,7 +151,7 @@ elsif s == "deg"
     end
     Interface.degree(pol,deg,ring)
   end
-elsif s == "mi"
+elsif s == "mi" || s == "6"
 
   # b11 = a11.clone
   # b12 = a12.clone
@@ -186,7 +197,7 @@ elsif s == "mi"
   # puts "Проверка:"
   # printf "#{((b11*c11+b12*c21)%f).pp}\t#{((b11*c12+b12*c22)%f).pp}\n"
   # printf "#{((b21*c11+b22*c21)%f).pp}\t#{((b21*c12+b22*c22)%f).pp}\n"
-elsif s == "eq"
+elsif s == "eq" || s == "7"
   mod = getp("mod")
   mult = getp("mult")
   result = getp("result")
@@ -209,7 +220,7 @@ elsif s == "eq"
   # ans = ans % mod
   # puts "Ответ: #{ans.pp} = y * last^(-1) * 2x % mod"
   # puts "Проверка: (#{mult.pp})*(#{ans.pp}) = #{((mult*ans)%mod).pp} ==? #{result.pp}"
-elsif s == "euc"
+elsif s == "euc" || s == "8"
   p1 = getp("p1")
   while true do
     p2 = getp("p2(0 для выхода)")
@@ -235,7 +246,7 @@ elsif s == "euc"
 
   # printf "Проверка:\n"
   # printf "(#{s2})*(#{s4}) + #{s3} = #{(p2*d+r).pp} ==? #{s1}\n"
-elsif s == "tab"
+elsif s == "tab" || s == "9"
 #   init = tab1.clone
   while true do
     tab1 = getp("Генератор(0 для завершения)")
@@ -257,7 +268,7 @@ elsif s == "tab"
 #       break
 #     end
 #   end
-elsif s == "varc"
+elsif s == "varc" || s == "10"
   pol1 = getp("Полином")
   varc = getp("Замена")
 
@@ -267,5 +278,6 @@ elsif s == "varc"
   # printf " == (#{(pol1.varchange(varc)).pp}) mod (#{f.pp}) = #{(pol1%f).pp}\n"
 else
   break
+end
 end
 end
